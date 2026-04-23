@@ -9,6 +9,7 @@ If you are trying to analyze a video frame-by-frame on a Mac, you have probably 
 - I just want clean frame stepping.
 - QuickTime keeps fighting me with chrome.
 - IINA hover chrome still gets in the way.
+- VLC is not much better.
 - Default `mpv` quits at EOF.
 - Default `mpv` controls can cover the frame.
 
