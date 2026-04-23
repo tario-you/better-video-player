@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>CFBundleDevelopmentRegion</key>
+  <string>en</string>
+  <key>CFBundleDisplayName</key>
+  <string>Better Video Player</string>
+  <key>CFBundleDocumentTypes</key>
+  <array>
+    <dict>
+      <key>CFBundleTypeName</key>
+      <string>Video</string>
+      <key>CFBundleTypeRole</key>
+      <string>Viewer</string>
+      <key>LSHandlerRank</key>
+      <string>Owner</string>
+      <key>LSItemContentTypes</key>
+      <array>
+        <string>com.adobe.flash-video</string>
+        <string>com.adobe.flash.video</string>
+        <string>com.apple.m4v-video</string>
+        <string>com.apple.quicktime-movie</string>
+        <string>com.microsoft.advanced-systems-format</string>
+        <string>com.microsoft.windows-media-wmv</string>
+        <string>com.real.realmedia</string>
+        <string>com.real.realmedia-vbr</string>
+        <string>org.matroska.mkv</string>
+        <string>org.videolan.divx</string>
+        <string>org.videolan.mpeg-stream</string>
+        <string>org.videolan.vob</string>
+        <string>org.webmproject.webm</string>
+        <string>org.xiph.ogg-video</string>
+        <string>public.3gpp</string>
+        <string>public.3gpp2</string>
+        <string>public.avchd-mpeg-2-transport-stream</string>
+        <string>public.avi</string>
+        <string>public.movie</string>
+        <string>public.mpeg</string>
+        <string>public.mpeg-2-transport-stream</string>
+        <string>public.mpeg-2-video</string>
+        <string>public.mpeg-4</string>
+        <string>public.video</string>
+      </array>
+    </dict>
+  </array>
+  <key>CFBundleExecutable</key>
+  <string>BetterVideoPlayer</string>
+  <key>CFBundleIdentifier</key>
+  <string>computer.moonshot.better-video-player</string>
+  <key>CFBundleInfoDictionaryVersion</key>
+  <string>6.0</string>
+  <key>CFBundleName</key>
+  <string>Better Video Player</string>
+  <key>CFBundlePackageType</key>
+  <string>APPL</string>
+  <key>CFBundleShortVersionString</key>
+  <string>1.0</string>
+  <key>CFBundleVersion</key>
+  <string>1</string>
+  <key>LSMinimumSystemVersion</key>
+  <string>13.0</string>
+  <key>LSUIElement</key>
+  <true/>
+  <key>NSHighResolutionCapable</key>
+  <true/>
+</dict>
+</plist>
