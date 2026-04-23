@@ -1,33 +1,50 @@
-# Better Video Player
+# Sanity-Preserving Frame Stepper (for macOS)
 
-Tiny macOS wrapper that makes double-clicked video files open in Homebrew `mpv` with a cleaner always-visible control bar:
+Better video player holy fuck.
+
+If you are trying to analyze a video frame-by-frame on a Mac, you have probably realized that every major video player is actively conspiring against you. This repo is the ultimate, zero-bullshit configuration for `mpv` that fixes all of it.
+
+## The Motivation
+
+I just wanted to go frame-by-frame. That's it. The annoying part is that every normal macOS video option gets one detail wrong in exactly the way that breaks frame inspection:
+
+- QuickTime keeps auto-showing and auto-hiding the scrub bar, so the UI constantly fights the frame you are trying to inspect.
+- QuickTime's frame stepping can feel weirdly stateful, especially when arrow keys only behave after recent play/pause interaction.
+- IINA is better, but the top chrome still appears and disappears on hover.
+- Default `mpv` exits immediately at EOF, which is useless when you need to stare at the final frame.
+- `mpv`'s UI can float over the video unless the OSC is forced into a real bottom bar outside the video area.
+- A fake borderless setup is not enough. The window needs to actually feel like a naked frame viewer, not a normal macOS video app wearing a bad disguise.
+
+## The Solution
+
+A completely naked video player where:
+
+1. You can step forward (`.`) and backward (`,`) frame-by-frame flawlessly.
+2. The UI is permanently pinned **below** the video in its own physical box (zero overlapping pixels, zero hover animations).
+3. The window has no macOS borders or fake title bars.
+4. The video freezes on the last frame instead of closing the app.
+5. Pressing Spacebar at the end of the video instantly loops back to `00:00` and starts playing.
+
+## Step 1: Install `mpv`
+
+If you don't have it, install it via Homebrew:
 
 ```bash
-mpv --keep-open --no-border --script-opts=osc-layout=bottombar,osc-visibility=always,osc-boxvideo=yes your_video.mp4
+brew install mpv
 ```
 
-## What This Does
+This repo assumes Homebrew `mpv` lives at:
 
-macOS default-app handling wants an `.app` bundle, not just a shell command. This repo builds a minimal AppKit wrapper app named `Better Video Player.app`.
-
-When Finder, Spotlight, AirDrop, or `open some-video.mp4` sends the wrapper a video file, it immediately launches:
-
-```bash
-/opt/homebrew/bin/mpv --keep-open --no-border --script-opts=osc-layout=bottombar,osc-visibility=always,osc-boxvideo=yes -- <video paths>
+```text
+/opt/homebrew/bin/mpv
 ```
 
-The wrapper is an `LSUIElement`, so it does not sit in the Dock. It starts `mpv`, hands off the video paths, and quits.
+## Step 2: Add the Replay Script
 
-The repo also installs an `mpv.conf` so direct terminal launches like `mpv movie.mkv` use the same defaults.
-
-## Replay From The End With Space
-
-If you also want SPACE to replay the video from the beginning after it hits EOF, add this mpv script:
+By default, `--keep-open` traps you at the end of the file and spacebar does nothing. Run this single command in your terminal to create a Lua script that fixes the spacebar logic:
 
 ```bash
-mkdir -p ~/.config/mpv/scripts
-
-cat << 'EOF' > ~/.config/mpv/scripts/replay.lua
+mkdir -p ~/.config/mpv/scripts && cat << 'EOF' > ~/.config/mpv/scripts/replay.lua
 mp.add_key_binding("SPACE", "replay_eof", function()
     if mp.get_property_native("eof-reached") then
         mp.command("no-osd seek 0 absolute")
@@ -37,27 +54,23 @@ mp.add_key_binding("SPACE", "replay_eof", function()
     end
 end)
 EOF
+```
 
+The same script is tracked in this repo at `mpv/scripts/replay.lua`, and `./install.sh` installs it automatically.
+
+## Step 3: Run Your Video
+
+Launch your video with this exact command to banish the UI to the shadow realm (a dedicated black box under the video) and kill the borders:
+
+```bash
 mpv --keep-open --no-border --script-opts=osc-layout=bottombar,osc-visibility=always,osc-boxvideo=yes your_video.mp4
 ```
 
-Normal SPACE behavior still pauses and unpauses while the video is playing. The difference is that once `--keep-open` leaves the player parked at the end, pressing SPACE seeks back to `0` and starts playback again.
+Pro-tip: Alias this command in your `.zshrc` so you don't have to type it every time.
 
-## Files
+## Step 4: Make Double-Clicked Videos Use It Too
 
-- `Sources/BetterVideoPlayer.swift`: the tiny AppKit wrapper that receives opened files and launches `mpv`.
-- `Resources/Info.plist`: declares the app bundle, hidden Dock behavior, and supported video document types.
-- `scripts/set-defaults.swift`: registers the wrapper as the default handler for common video content types.
-- `mpv/mpv.conf`: global mpv defaults matching the command above.
-- `install.sh`: rebuilds the app, registers it with LaunchServices, and installs the mpv config.
-
-## Install
-
-Requirements:
-
-- macOS
-- Xcode command line tools
-- Homebrew `mpv` at `/opt/homebrew/bin/mpv`
+macOS default-app handling wants an `.app` bundle, not just a shell command. This repo builds a minimal AppKit wrapper app named `Better Video Player.app`.
 
 Run:
 
@@ -70,9 +83,29 @@ That creates:
 ```text
 ~/Applications/Better Video Player.app
 ~/.config/mpv/mpv.conf
+~/.config/mpv/scripts/replay.lua
 ```
 
 Then it registers `computer.moonshot.better-video-player` as the default handler for common video types, including `.mp4`, `.mov`, `.mkv`, `.webm`, `.avi`, `.wmv`, `.m4v`, `.ts`, `.m2ts`, `.flv`, and `.ogv`.
+
+When Finder, Spotlight, AirDrop, or `open some-video.mp4` sends the wrapper a video file, it immediately launches:
+
+```bash
+/opt/homebrew/bin/mpv --keep-open --no-border --script-opts=osc-layout=bottombar,osc-visibility=always,osc-boxvideo=yes -- <video paths>
+```
+
+The wrapper is an `LSUIElement`, so it does not sit in the Dock. It starts `mpv`, hands off the video paths, and quits.
+
+Enjoy your sanity.
+
+## Files
+
+- `Sources/BetterVideoPlayer.swift`: the tiny AppKit wrapper that receives opened files and launches `mpv`.
+- `Resources/Info.plist`: declares the app bundle, hidden Dock behavior, and supported video document types.
+- `scripts/set-defaults.swift`: registers the wrapper as the default handler for common video content types.
+- `mpv/mpv.conf`: global mpv defaults matching the command above.
+- `mpv/scripts/replay.lua`: SPACE replay behavior at EOF while keeping normal pause/unpause elsewhere.
+- `install.sh`: rebuilds the app, registers it with LaunchServices, installs the mpv config, and installs the replay script.
 
 ## How I Set It Up On This Mac
 
@@ -93,12 +126,13 @@ xcrun swiftc -O -framework AppKit \
   Sources/BetterVideoPlayer.swift
 ```
 
-Copied in the bundle plist and mpv config:
+Copied in the bundle plist, mpv config, and replay script:
 
 ```bash
 cp Resources/Info.plist "$HOME/Applications/Better Video Player.app/Contents/Info.plist"
-mkdir -p "$HOME/.config/mpv"
+mkdir -p "$HOME/.config/mpv/scripts"
 cp mpv/mpv.conf "$HOME/.config/mpv/mpv.conf"
+cp mpv/scripts/replay.lua "$HOME/.config/mpv/scripts/replay.lua"
 ```
 
 Signed and registered the wrapper:

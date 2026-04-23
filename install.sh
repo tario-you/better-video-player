@@ -6,6 +6,7 @@ app_name="Better Video Player.app"
 app_path="$HOME/Applications/$app_name"
 bundle_id="computer.moonshot.better-video-player"
 mpv_conf_dir="$HOME/.config/mpv"
+mpv_scripts_dir="$HOME/.config/mpv/scripts"
 
 if ! command -v xcrun >/dev/null 2>&1; then
   echo "xcrun is required. Install Xcode command line tools first." >&2
@@ -18,7 +19,7 @@ if [[ ! -x /opt/homebrew/bin/mpv ]]; then
   exit 1
 fi
 
-mkdir -p "$app_path/Contents/MacOS" "$app_path/Contents/Resources" "$mpv_conf_dir"
+mkdir -p "$app_path/Contents/MacOS" "$app_path/Contents/Resources" "$mpv_conf_dir" "$mpv_scripts_dir"
 
 xcrun swiftc \
   -O \
@@ -28,6 +29,7 @@ xcrun swiftc \
 
 cp "$repo_root/Resources/Info.plist" "$app_path/Contents/Info.plist"
 cp "$repo_root/mpv/mpv.conf" "$mpv_conf_dir/mpv.conf"
+cp "$repo_root/mpv/scripts/replay.lua" "$mpv_scripts_dir/replay.lua"
 chmod +x "$app_path/Contents/MacOS/BetterVideoPlayer"
 
 /usr/bin/codesign --force --sign - "$app_path"
