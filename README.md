@@ -6,9 +6,11 @@ If you are trying to analyze a video frame-by-frame on a Mac, you have probably 
 
 ## The Motivation
 
-- QuickTime and IINA keep putting chrome over the frame or popping it in and out.
-- Default `mpv` is close, but it quits at EOF and can still overlay controls.
-- This makes `mpv` a clean frame viewer: borderless, bottom controls, keep-open EOF, Spacebar replay.
+- I just want clean frame stepping.
+- QuickTime keeps fighting me with chrome.
+- IINA hover chrome still gets in the way.
+- Default `mpv` quits at EOF.
+- Default `mpv` controls can cover the frame.
 
 ## The Solution
 
