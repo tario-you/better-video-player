@@ -6,14 +6,9 @@ If you are trying to analyze a video frame-by-frame on a Mac, you have probably 
 
 ## The Motivation
 
-I just wanted to go frame-by-frame. That's it. The annoying part is that every normal macOS video option gets one detail wrong in exactly the way that breaks frame inspection:
+I just wanted to go frame-by-frame without fighting the player.
 
-- QuickTime keeps auto-showing and auto-hiding the scrub bar, so the UI constantly fights the frame you are trying to inspect.
-- QuickTime's frame stepping can feel weirdly stateful, especially when arrow keys only behave after recent play/pause interaction.
-- IINA is better, but the top chrome still appears and disappears on hover.
-- Default `mpv` exits immediately at EOF, which is useless when you need to stare at the final frame.
-- `mpv`'s UI can float over the video unless the OSC is forced into a real bottom bar outside the video area.
-- A fake borderless setup is not enough. The window needs to actually feel like a naked frame viewer, not a normal macOS video app wearing a bad disguise.
+QuickTime and IINA keep showing chrome at the worst times. Default `mpv` is close, but it exits at EOF and its UI can still float over the frame. This setup makes `mpv` behave like a clean frame viewer: no border, real bottom controls, keep-open EOF, and Spacebar replay.
 
 ## The Solution
 
