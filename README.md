@@ -20,6 +20,29 @@ The wrapper is an `LSUIElement`, so it does not sit in the Dock. It starts `mpv`
 
 The repo also installs an `mpv.conf` so direct terminal launches like `mpv movie.mkv` use the same defaults.
 
+## Replay From The End With Space
+
+If you also want SPACE to replay the video from the beginning after it hits EOF, add this mpv script:
+
+```bash
+mkdir -p ~/.config/mpv/scripts
+
+cat << 'EOF' > ~/.config/mpv/scripts/replay.lua
+mp.add_key_binding("SPACE", "replay_eof", function()
+    if mp.get_property_native("eof-reached") then
+        mp.command("no-osd seek 0 absolute")
+        mp.set_property("pause", "no")
+    else
+        mp.command("cycle pause")
+    end
+end)
+EOF
+
+mpv --keep-open --no-border --script-opts=osc-layout=bottombar,osc-visibility=always,osc-boxvideo=yes your_video.mp4
+```
+
+Normal SPACE behavior still pauses and unpauses while the video is playing. The difference is that once `--keep-open` leaves the player parked at the end, pressing SPACE seeks back to `0` and starts playback again.
+
 ## Files
 
 - `Sources/BetterVideoPlayer.swift`: the tiny AppKit wrapper that receives opened files and launches `mpv`.
